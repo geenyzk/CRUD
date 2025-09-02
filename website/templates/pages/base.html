@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lux-bootstrap.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZmCULaM6tU8zTnDJbC0iE4zVF5lXJvR+1fGMEYShgojW3aV+8U5KkN8YF7X+4d0cw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body>
+    {% include 'components/navbar.html' %}
+
+    <div class="container">
+    {% block content %}
+    {% endblock %}
+    </div>
+</body>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+</html>
