@@ -1,6 +1,10 @@
 {% extends 'pages/base.html' %}
 
 {% block content %}
-    <h1>Login Here</h1>
-    <a href="{% url 'home' %}">Login</a>
+    <h1>Login Page</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
 {% endblock content %}
