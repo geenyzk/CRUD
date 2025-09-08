@@ -6,11 +6,18 @@ def home(request):
     return render(request, 'pages/index.html')
 
 def login(request):
-    return render(request, 'pages/login.html')
+    form = LoginForm()
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            # Log the user in
+            pass
+    context = {'form': form}
+    return render(request, 'pages/login.html', context)
 
 def register(request):
     # Make a form from forms.py
-    
+
     form = CreateUserForm()
     if request.method == 'POST':
         # Make a form with the data filled by the user
