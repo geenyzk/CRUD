@@ -1,4 +1,5 @@
 {% extends 'pages/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="container-fluid bg-white text-dark py-5">
@@ -9,7 +10,7 @@
 
         <form method="POST" autocomplete="off">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form | crispy }}
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
 

@@ -3,4 +3,8 @@
 {% block content %}
     <h1>Welcome to the Homepage</h1>
     <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'logout' %}">Logout</a> 
+    <br>
+    <hr>
+    <p>{{user}}</p>    
 {% endblock content %}

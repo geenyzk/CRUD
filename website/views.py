@@ -1,30 +1,35 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib import messages
 from .forms import CreateUserForm, LoginForm
 
-# Create your views here.
 def home(request):
-    return render(request, 'pages/index.html')
-
-def login(request):
-    form = LoginForm()
-    if request.method == 'POST':
-        form = LoginForm(data=request.POST)
-        if form.is_valid():
-            # Log the user in
-            pass
-    context = {'form': form}
-    return render(request, 'pages/login.html', context)
-
+    return render(request, 'pages/index.html')  # or the template you want
 def register(request):
-    # Make a form from forms.py
-
     form = CreateUserForm()
     if request.method == 'POST':
-        # Make a form with the data filled by the user
-
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Account created successfully! You can now log in.')
+            return redirect('login')
     context = {'form': form}
     return render(request, 'pages/register.html', context)
 
+def login(request):
+    form = LoginForm(request, data=request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            messages.success(request, f"Welcome back, {user.username}!")
+            return redirect('home')  # Change to your landing/dashboard/home route
+        else:
+            messages.error(request, 'Invalid username or password.')
+
+    return render(request, 'pages/login.html', {'form': form})
+
+def logout(request):
+    auth_logout(request)
+    messages.info(request, 'You have been logged out.')
+    return redirect('login')
