@@ -1,41 +1,24 @@
-{% block content %}
-<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-primary shadow-sm" data-bs-theme="dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'home' %}">CRUD</a>
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">CRUD</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarColor01">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="{% url 'home' %}">Home
-            <span class="visually-hidden">(current)</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'register' %}">Register</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a>
-          </div>
+          <a class="nav-link" href="{% url 'home' %}">Home</a>
         </li>
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-sm-2" type="search" placeholder="Search">
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-      </form>
+      <div class="d-flex align-items-center gap-2">
+        {% if user.is_authenticated %}
+          <span class="navbar-text me-2">Hi, {{ user.username }}</span>
+          <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}">Logout</a>
+        {% else %}
+          <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Login</a>
+          <a class="btn btn-warning btn-sm" href="{% url 'register' %}">Sign Up</a>
+        {% endif %}
+      </div>
     </div>
   </div>
 </nav>
@@ -49,4 +32,3 @@
     {% endfor %}
   </div>
 {% endif %}
-{% endblock %}

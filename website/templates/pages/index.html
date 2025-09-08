@@ -1,10 +1,54 @@
 {% extends 'pages/base.html' %}
 
+{% block title %}Home · CRUD{% endblock %}
+
 {% block content %}
-    <h1>Welcome to the Homepage</h1>
-    <a href="{% url 'login' %}">Login</a>
-    <a href="{% url 'logout' %}">Logout</a> 
-    <br>
-    <hr>
-    <p>{{user}}</p>    
+  <section class="hero-plain pattern rounded-4 p-5 mb-5">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <h1 class="display-5 fw-bold mb-3">Manage clients with clarity and speed</h1>
+        <p class="lead opacity-90 mb-4">A lightweight CRUD app with authentication. Log in to get started or create an account in seconds.</p>
+        <div class="d-flex gap-2">
+          {% if user.is_authenticated %}
+            <a href="{% url 'home' %}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-primary btn-lg">Logout</a>
+          {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg">Register</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="feature-card p-4">
+          <h5 class="mb-2">Quick facts</h5>
+          <ul class="mb-0 small text-secondary">
+            <li>Bootswatch Lux + custom styles</li>
+            <li>Django auth with messages</li>
+            <li>Fully responsive layout</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="row g-4">
+    <div class="col-md-4">
+      <div class="feature-card p-4 h-100">
+        <h5 class="mb-2">Secure Auth</h5>
+        <p class="mb-0 text-secondary">Login, Logout, and Registration with helpful feedback messages.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card p-4 h-100">
+        <h5 class="mb-2">Clean UI</h5>
+        <p class="mb-0 text-secondary">Modern typography, balanced spacing, and a crisp color theme.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card p-4 h-100">
+        <h5 class="mb-2">Responsive</h5>
+        <p class="mb-0 text-secondary">Looks great on desktop and mobile with Bootstrap utilities.</p>
+      </div>
+    </div>
+  </section>
 {% endblock content %}
