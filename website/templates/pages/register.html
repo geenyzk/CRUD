@@ -1,10 +1,23 @@
-{% extends 'pages/base.html' %}x
+{% extends 'pages/base.html' %}
 
 {% block content %}
-    <h1>Register Page</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
+<div class="container-fluid bg-white text-dark py-5">
+    <div class="container">
+        <h3>Create your Account</h3>
+        <h5>Start managing your clients today!</h5>
+        <hr>
+
+        <form method="POST" autocomplete="off">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <p>Already have an account?
+                <a href="{% url 'login' %}">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
 {% endblock content %}
