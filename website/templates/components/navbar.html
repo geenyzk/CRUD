@@ -9,6 +9,17 @@
         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
         {% if user.is_authenticated %}
           <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
+          {% if user.is_staff %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Admin</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'admin_users' %}">Users</a></li>
+              <li><a class="dropdown-item" href="{% url 'records_list' %}">Records</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'admin:index' %}">Django Admin</a></li>
+            </ul>
+          </li>
+          {% endif %}
         {% endif %}
       </ul>
       <div class="d-flex align-items-center gap-2">

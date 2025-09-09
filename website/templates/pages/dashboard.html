@@ -1,4 +1,5 @@
 {% extends 'pages/base.html' %}
+{% load humanize %}
 
 {% block title %}Dashboard · CRUD{% endblock %}
 
@@ -39,7 +40,7 @@
             <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
               <div>
                 <div class="fw-medium">{{ item.title }}</div>
-                <div class="small text-secondary">{{ item.when }}</div>
+                <div class="small text-secondary">{{ item.when|naturaltime }}</div>
               </div>
               <span class="badge text-bg-light border">{{ item.status }}</span>
             </div>
@@ -68,4 +69,3 @@
     </div>
   </section>
 {% endblock content %}
-

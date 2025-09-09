@@ -24,6 +24,8 @@ main {
   min-height: 70vh;
 }
 
+/* (glass-panel removed) */
+
 /* Hero */
 .hero{ /* legacy gradient hero if used elsewhere */
   background: linear-gradient(135deg, var(--brand), var(--brand-600));
@@ -56,13 +58,7 @@ main {
   background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%);
 }
 
-.glass-card{
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.35);
-  border-radius: 1rem;
-  color: #fff;
-  backdrop-filter: blur(4px);
-}
+/* (glass-card removed) */
 
 /* Feature cards */
 .feature-card{
@@ -71,6 +67,9 @@ main {
   border-radius: 0.75rem;
   box-shadow: 0 10px 20px -12px rgba(13,110,253,.2);
 }
+
+/* Glass button */
+/* (glass buttons removed) */
 
 /* Forms */
 .form-control:focus{
