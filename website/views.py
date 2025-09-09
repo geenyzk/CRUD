@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib import messages
 from .forms import CreateUserForm, LoginForm
 
+
 def home(request):
     return render(request, 'pages/index.html')  # or the template you want
 def register(request):
@@ -33,3 +34,7 @@ def logout(request):
     auth_logout(request)
     messages.info(request, 'You have been logged out.')
     return redirect('login')
+
+@login_required(login_url="login")
+def dashboard(request):
+    return render(request, 'pages/dashboadrd.html')

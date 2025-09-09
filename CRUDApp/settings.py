@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,21 @@ SECRET_KEY = 'django-insecure-^h*ipm3%&az7pb@b5h^8ls5qr@adp85o8c(#+4z7l$wtp*9-6)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Allow localhost by default; override with env for tunnels/domains
+ALLOWED_HOSTS = os.getenv(
+    "DJANGO_ALLOWED_HOSTS",
+    "localhost,127.0.0.1,[::1]"
+).split(",")
+
+# Trust common dev/tunnel origins (override via env if needed)
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "DJANGO_CSRF_TRUSTED_ORIGINS",
+    "http://localhost:8000,http://127.0.0.1:8000,https://*.ngrok-free.app,https://*.trycloudflare.com,https://*.githubpreview.dev,https://*.app.github.dev"
+).split(",")
+
+# Respect X-Forwarded headers when behind a proxy/tunnel
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Application definition
