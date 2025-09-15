@@ -4,11 +4,12 @@
 {% block title %}Home · CRUD{% endblock %}
 
 {% block content %}
-  <section class="hero-plain pattern rounded-4 p-4 p-md-5 mb-5">
+  <section class="hero-cover rounded-4 p-4 p-md-5 mb-5">
     <div class="row align-items-center g-4">
       <div class="col-lg-6">
-        <h1 class="display-5 fw-bold mb-3">Manage clients with clarity and speed</h1>
-        <p class="lead opacity-90 mb-4">A polished CRUD starter built on Django. Clean UI, secure auth, and practical admin tools out of the box.</p>
+        <span class="badge badge-soft rounded-pill mb-3">Django + Bootstrap</span>
+        <h1 class="display-5 fw-bold mb-3">A clean CRUD starter for real work</h1>
+        <p class="lead opacity-90 mb-4">Launch faster with secure auth, a polished UI, and admin tools ready to go. Focus on your data, not boilerplate.</p>
         <div class="d-flex gap-2">
           {% if user.is_authenticated %}
             <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">Go to Dashboard</a>
@@ -23,7 +24,7 @@
         <div class="feature-card p-3 p-md-4">
           <div class="d-flex align-items-center gap-3 mb-3">
             <span class="badge text-bg-light">Preview</span>
-            <span class="text-secondary small">Looks great on any screen</span>
+            <span class="text-secondary small">Responsive and accessible</span>
           </div>
           <div class="ratio ratio-16x9 rounded" style="background:
             linear-gradient(180deg, rgba(13,110,253,.12), rgba(111,66,193,.1));
@@ -42,25 +43,62 @@
     </div>
   </section>
 
-  <section id="features" class="row g-3 g-md-4 mb-5">
-    <div class="col-6 col-md-3">
-      <div class="feature-card p-3 p-md-4 h-100">
-        <div class="d-flex align-items-center gap-3">
-          <div class="text-primary fs-4"><i class="fa-solid fa-database"></i></div>
-          <div>
-            <div class="h4 mb-0">{{ total_records|default:0 }}</div>
-            <div class="text-secondary small">Records</div>
-          </div>
+  <section id="features" class="mb-5">
+    <div class="row g-3 g-md-4">
+      <div class="col-md-4">
+        <div class="feature-card p-4 h-100">
+          <div class="icon-circle mb-3"><i class="fa-solid fa-lock"></i></div>
+          <h5 class="mb-2">Secure Auth</h5>
+          <p class="text-secondary mb-0">Login, registration, and feedback messages configured with sane defaults.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card p-4 h-100">
+          <div class="icon-circle purple mb-3"><i class="fa-solid fa-palette"></i></div>
+          <h5 class="mb-2">Polished UI</h5>
+          <p class="text-secondary mb-0">Modern spacing, typography, and components that feel production‑ready.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card p-4 h-100">
+          <div class="icon-circle success mb-3"><i class="fa-solid fa-bolt"></i></div>
+          <h5 class="mb-2">Ready to Extend</h5>
+          <p class="text-secondary mb-0">Hook your models in quickly—admin pages and examples included.</p>
         </div>
       </div>
     </div>
-    <div class="col-6 col-md-3">
-      <div class="feature-card p-3 p-md-4 h-100">
-        <div class="d-flex align-items-center gap-3">
-          <div class="text-success fs-4"><i class="fa-solid fa-users"></i></div>
-          <div>
-            <div class="h4 mb-0">{{ total_users|default:0 }}</div>
-            <div class="text-secondary small">Users</div>
+  </section>
+
+  <section class="mb-5">
+    <div class="row g-3 g-md-4">
+      <div class="col-lg-5">
+        <h4 class="section-title mb-2">How it works</h4>
+        <p class="section-subtitle">Get a usable app in minutes</p>
+        <ul class="list-check mt-3">
+          <li>Register or login to access your dashboard</li>
+          <li>Create records from the admin pages</li>
+          <li>Customize models, styles, and routes to fit your needs</li>
+        </ul>
+      </div>
+      <div class="col-lg-7">
+        <div class="row g-3 g-md-4">
+          <div class="col-6 col-md-4">
+            <div class="feature-card p-3 text-center h-100">
+              <div class="icon-circle mb-2"><i class="fa-solid fa-user-plus"></i></div>
+              <div class="small text-secondary">Sign up</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="feature-card p-3 text-center h-100">
+              <div class="icon-circle mb-2"><i class="fa-solid fa-gauge-high"></i></div>
+              <div class="small text-secondary">Use dashboard</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="feature-card p-3 text-center h-100">
+              <div class="icon-circle mb-2"><i class="fa-solid fa-table-list"></i></div>
+              <div class="small text-secondary">Add records</div>
+            </div>
           </div>
         </div>
       </div>
