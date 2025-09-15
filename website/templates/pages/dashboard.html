@@ -4,15 +4,17 @@
 {% block title %}Dashboard · CRUD{% endblock %}
 
 {% block content %}
-  <header class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-    <div>
-      <h2 class="mb-1">Hi {{ user.first_name|default:user.username }},</h2>
-      <p class="text-secondary mb-0">Here’s a quick overview of your workspace.</p>
+  <div class="feature-card p-3 p-md-4 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <div>
+        <h2 class="mb-1">Hi {{ user.first_name|default:user.username }},</h2>
+        <p class="text-secondary mb-0">Here’s a quick overview of your workspace.</p>
+      </div>
+      <div class="d-flex gap-2 mt-3 mt-md-0">
+        <a href="{% url 'logout' %}" class="btn btn-outline-secondary">Logout</a>
+      </div>
     </div>
-    <div class="d-flex gap-2">
-      <a href="{% url 'logout' %}" class="btn btn-outline-secondary">Logout</a>
-    </div>
-  </header>
+  </div>
 
   <section class="row g-3 g-md-4 mb-4">
     {% for s in stats %}

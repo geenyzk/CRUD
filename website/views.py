@@ -12,7 +12,16 @@ from .models import Record
 
 
 def home(request):
-    return render(request, 'pages/index.html')  # or the template you want
+    # lightweight stats + recent content for homepage
+    total_users = User.objects.count()
+    total_records = Record.objects.count()
+    recent_records = Record.objects.select_related('created_by')[:6]
+    context = {
+        'total_users': total_users,
+        'total_records': total_records,
+        'recent_records': recent_records,
+    }
+    return render(request, 'pages/index.html', context)
 def register(request):
     form = CreateUserForm()
     if request.method == 'POST':

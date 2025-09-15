@@ -3,9 +3,14 @@
 {% block title %}Records · Admin{% endblock %}
 
 {% block content %}
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="mb-0">Records</h3>
-    <a href="{% url 'record_create' %}" class="btn btn-primary">New Record</a>
+  <div class="feature-card p-3 p-md-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h3 class="mb-0">Records</h3>
+        <p class="text-secondary small mb-0">Browse and manage your dataset</p>
+      </div>
+      <a href="{% url 'record_create' %}" class="btn btn-primary">New Record</a>
+    </div>
   </div>
 
   <div class="card shadow-sm border-0">

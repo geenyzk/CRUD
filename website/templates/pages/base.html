@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CRUD{% endblock %}</title>
+    <meta name="description" content="A polished Django CRUD starter with authentication, clean UI, and admin tools.">
     <meta name="theme-color" content="#0d6efd">
     <!-- Core styles: Bootstrap + Bootswatch theme -->
     <link rel="stylesheet" href="{% static 'CSS/bootstrap.css' %}">
@@ -21,11 +22,13 @@
 <body>
     {% include 'components/navbar.html' %}
 
-    <main class="py-4">
+    <main class="site-main py-4 py-md-5">
       <div class="container-xxl">
         {% block content %}{% endblock %}
       </div>
     </main>
+
+    {% include 'components/footer.html' %}
 </body>
     <script src="{% static 'JS/bootstrap.js' %}"></script>
 </html>
