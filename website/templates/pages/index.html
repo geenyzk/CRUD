@@ -1,41 +1,87 @@
 {% extends 'pages/base.html' %}
-{% load humanize %}
+{% load humanize ui_icons %}
 
 {% block title %}Home · CRUD{% endblock %}
 
 {% block content %}
-  <section class="hero-cover rounded-4 p-4 p-md-5 mb-5">
-    <div class="row align-items-center g-4">
-      <div class="col-lg-6">
-        <span class="badge badge-soft rounded-pill mb-3">Django + Bootstrap</span>
-        <h1 class="display-5 fw-bold mb-3">A clean CRUD starter for real work</h1>
-        <p class="lead opacity-90 mb-4">Launch faster with secure auth, a polished UI, and admin tools ready to go. Focus on your data, not boilerplate.</p>
-        <div class="d-flex gap-2">
+  {% with primary_button="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_-24px_rgba(59,130,246,0.8)] transition hover:from-sky-400 hover:to-indigo-400" outline_button="inline-flex items-center gap-3 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white/85 transition hover:border-white/40 hover:bg-white/10" muted_chip="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/70" %}
+  <section class="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 px-8 py-12 shadow-[0_60px_120px_-60px_rgba(29,78,216,0.55)]">
+    <div class="pointer-events-none absolute inset-0">
+      <div class="absolute -left-32 top-0 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl"></div>
+      <div class="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-indigo-400/20 blur-3xl"></div>
+    </div>
+    <div class="relative grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+      <div class="space-y-6">
+        <span class="{{ muted_chip }}">{% icon 'rocket' classes='h-4 w-4' %} Launch-ready Django stack</span>
+        <h1 class="text-4xl font-semibold leading-tight text-white sm:text-5xl">Build internal tools that feel handcrafted.</h1>
+        <p class="max-w-2xl text-base text-slate-200/85 sm:text-lg">Authentication, admin workflows, and a refined UI framework—deploy in minutes and expand as your product grows.</p>
+        <div class="flex flex-wrap gap-3">
           {% if user.is_authenticated %}
-            <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">Go to Dashboard</a>
-            <a href="{% url 'logout' %}" class="btn btn-outline-primary btn-lg">Logout</a>
+            <a href="{% url 'dashboard' %}" class="{{ primary_button }}">{% icon 'gauge' classes='h-4 w-4' %} Go to dashboard</a>
+            <a href="{% url 'records_list' %}" class="{{ outline_button }}">{% icon 'table' classes='h-4 w-4' %} Manage records</a>
           {% else %}
-            <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
-            <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg">Register</a>
+            <a href="{% url 'register' %}" class="{{ primary_button }}">{% icon 'rocket' classes='h-4 w-4' %} Create an account</a>
+            <a href="{% url 'login' %}" class="{{ outline_button }}">{% icon 'login' classes='h-4 w-4' %} Sign in</a>
           {% endif %}
         </div>
+        <div class="flex flex-wrap gap-3 text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+          <span class="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-white/70">{% icon 'users' classes='h-4 w-4' %} Users {{ total_users }}</span>
+          <span class="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-white/70">{% icon 'stack' classes='h-4 w-4' %} Records {{ total_records }}</span>
+          <span class="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-white/70">{% icon 'clock' classes='h-4 w-4' %} Latest update {% if latest_record %}{{ latest_record.created_at|naturaltime }}{% else %}—{% endif %}</span>
+        </div>
       </div>
-      <div class="col-lg-6">
-        <div class="feature-card p-3 p-md-4">
-          <div class="d-flex align-items-center gap-3 mb-3">
-            <span class="badge text-bg-light">Preview</span>
-            <span class="text-secondary small">Responsive and accessible</span>
+      <div class="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+        <div class="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.24em] text-white/70">
+          <span>Live preview</span>
+          <span class="inline-flex items-center gap-2 text-white/60">{% icon 'arrows' classes='h-4 w-4' %} Responsive</span>
+        </div>
+        <div class="mt-6 space-y-5 text-white/75">
+          <div class="grid grid-cols-3 gap-3">
+            <div class="flex h-14 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-white/30 to-white/5 text-lg">{% icon 'chart' classes='h-5 w-5' %}</div>
+            <div class="flex h-14 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-sky-400/40 to-sky-200/20 text-lg">{% icon 'stack' classes='h-5 w-5' %}</div>
+            <div class="flex h-14 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-indigo-400/40 to-indigo-200/20 text-lg">{% icon 'users' classes='h-5 w-5' %}</div>
           </div>
-          <div class="ratio ratio-16x9 rounded" style="background:
-            linear-gradient(180deg, rgba(13,110,253,.12), rgba(111,66,193,.1));
-            border:1px solid rgba(0,0,0,.06);
-          ">
-            <!-- Mock UI block -->
-            <div class="d-flex flex-column p-3 p-md-4" style="gap:.5rem;">
-              <div class="bg-white rounded-2" style="height:10px; width:40%; opacity:.8"></div>
-              <div class="bg-white rounded-2" style="height:10px; width:75%; opacity:.7"></div>
-              <div class="bg-white rounded-2" style="height:10px; width:55%; opacity:.7"></div>
-              <div class="bg-white rounded-2 mt-auto" style="height:50%; opacity:.5"></div>
+          <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-white/15 to-white/5 p-5 shadow-[0_30px_80px_-60px_rgba(15,23,42,0.7)]">
+            <div class="flex items-center justify-between text-[0.7rem] uppercase tracking-[0.3em] text-white/60">
+              Team health
+              {% icon 'dots' classes='h-4 w-4' %}
+            </div>
+            <div class="mt-4 space-y-3 text-xs">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span>Active users</span>
+                  <span class="font-semibold text-white">28</span>
+                </div>
+                <div class="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
+                  <div class="h-full w-3/4 rounded-full bg-sky-400/80"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between">
+                  <span>New records</span>
+                  <span class="font-semibold text-white">12</span>
+                </div>
+                <div class="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
+                  <div class="h-full w-2/3 rounded-full bg-indigo-400/80"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-xs">
+            <div class="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 p-3 text-left">
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/20 text-sky-200">{% icon 'bolt' classes='h-4 w-4' %}</span>
+              <span class="text-[0.65rem] uppercase tracking-[0.3em] text-white/60">Automation</span>
+              <p class="text-[0.7rem] leading-5 text-white/70">Trigger follow-ups as soon as records change.</p>
+            </div>
+            <div class="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 p-3 text-left">
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/20 text-violet-200">{% icon 'chart' classes='h-4 w-4' %}</span>
+              <span class="text-[0.65rem] uppercase tracking-[0.3em] text-white/60">Insights</span>
+              <p class="text-[0.7rem] leading-5 text-white/70">Surface KPIs that keep your team aligned.</p>
+            </div>
+            <div class="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 p-3 text-left">
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-200">{% icon 'shield' classes='h-4 w-4' %}</span>
+              <span class="text-[0.65rem] uppercase tracking-[0.3em] text-white/60">Security</span>
+              <p class="text-[0.7rem] leading-5 text-white/70">Role-based access ensures data stays safe.</p>
             </div>
           </div>
         </div>
@@ -43,168 +89,130 @@
     </div>
   </section>
 
-  <section id="features" class="mb-5">
-    <div class="row g-3 g-md-4">
-      <div class="col-md-4">
-        <div class="feature-card p-4 h-100">
-          <div class="icon-circle mb-3"><i class="fa-solid fa-lock"></i></div>
-          <h5 class="mb-2">Secure Auth</h5>
-          <p class="text-secondary mb-0">Login, registration, and feedback messages configured with sane defaults.</p>
-        </div>
+  <section id="features" class="mt-12 grid gap-6 md:grid-cols-3">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-200 shadow-[0_40px_90px_-60px_rgba(14,165,233,0.5)] backdrop-blur">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-500/30 text-sky-200">{% icon 'shield' classes='h-6 w-6' %}</div>
+      <h3 class="text-lg font-semibold text-white">Secure authentication</h3>
+      <p class="mt-2 text-sm text-slate-300">Registration, login, and session messaging are tuned for production from day one.</p>
+    </div>
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-200 shadow-[0_40px_90px_-60px_rgba(192,132,252,0.4)] backdrop-blur">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-500/30 text-violet-200">{% icon 'palette' classes='h-6 w-6' %}</div>
+      <h3 class="text-lg font-semibold text-white">Design system</h3>
+      <p class="mt-2 text-sm text-slate-300">Custom palette, typography, and cards deliver a cohesive UX without extra setup.</p>
+    </div>
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-200 shadow-[0_40px_90px_-60px_rgba(45,212,191,0.45)] backdrop-blur">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/30 text-emerald-200">{% icon 'bolt' classes='h-6 w-6' %}</div>
+      <h3 class="text-lg font-semibold text-white">Staff workflows</h3>
+      <p class="mt-2 text-sm text-slate-300">Role-based dashboards and admin tooling streamline daily maintenance.</p>
+    </div>
+  </section>
+
+  <section class="mt-12 grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-[0_50px_110px_-70px_rgba(59,130,246,0.6)] backdrop-blur">
+      <h3 class="text-2xl font-semibold text-white">Ship features, not boilerplate</h3>
+      <p class="mt-4 text-sm text-slate-300">Plug in your models and turn this starter into a bespoke platform.</p>
+      <ul class="mt-6 space-y-4 text-sm text-slate-200/90">
+        <li class="flex items-start gap-3 text-sky-200">{% icon 'check' classes='h-4 w-4' %} <span class="text-slate-200">Register or sign in to unlock the dashboard.</span></li>
+        <li class="flex items-start gap-3 text-sky-200">{% icon 'check' classes='h-4 w-4' %} <span class="text-slate-200">Manage datasets with the records workspace.</span></li>
+        <li class="flex items-start gap-3 text-sky-200">{% icon 'check' classes='h-4 w-4' %} <span class="text-slate-200">Extend the UI with charts, KPIs, or custom modules.</span></li>
+      </ul>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2">
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-center text-sm text-slate-200 shadow-[0_40px_90px_-60px_rgba(14,165,233,0.5)] backdrop-blur">
+        <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-sky-200">{% icon 'user-plus' classes='h-6 w-6' %}</div>
+        <p class="text-base font-semibold text-white">Create account</p>
+        <p class="mt-2 text-xs leading-relaxed text-slate-300">Invite your team with secure onboarding flows.</p>
       </div>
-      <div class="col-md-4">
-        <div class="feature-card p-4 h-100">
-          <div class="icon-circle purple mb-3"><i class="fa-solid fa-palette"></i></div>
-          <h5 class="mb-2">Polished UI</h5>
-          <p class="text-secondary mb-0">Modern spacing, typography, and components that feel production‑ready.</p>
-        </div>
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-center text-sm text-slate-200 shadow-[0_40px_90px_-60px_rgba(129,140,248,0.5)] backdrop-blur">
+        <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-indigo-200">{% icon 'gauge' classes='h-6 w-6' %}</div>
+        <p class="text-base font-semibold text-white">Review analytics</p>
+        <p class="mt-2 text-xs leading-relaxed text-slate-300">See engagement trends and respond in real time.</p>
       </div>
-      <div class="col-md-4">
-        <div class="feature-card p-4 h-100">
-          <div class="icon-circle success mb-3"><i class="fa-solid fa-bolt"></i></div>
-          <h5 class="mb-2">Ready to Extend</h5>
-          <p class="text-secondary mb-0">Hook your models in quickly—admin pages and examples included.</p>
-        </div>
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-center text-sm text-slate-200 shadow-[0_40px_90px_-60px_rgba(45,212,191,0.45)] backdrop-blur sm:col-span-2">
+        <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-emerald-200">{% icon 'table' classes='h-6 w-6' %}</div>
+        <p class="text-base font-semibold text-white">Publish records</p>
+        <p class="mt-2 text-xs leading-relaxed text-slate-300">Capture context-rich entries and keep everyone aligned.</p>
       </div>
     </div>
   </section>
 
-  <section class="mb-5">
-    <div class="row g-3 g-md-4">
-      <div class="col-lg-5">
-        <h4 class="section-title mb-2">How it works</h4>
-        <p class="section-subtitle">Get a usable app in minutes</p>
-        <ul class="list-check mt-3">
-          <li>Register or login to access your dashboard</li>
-          <li>Create records from the admin pages</li>
-          <li>Customize models, styles, and routes to fit your needs</li>
-        </ul>
-      </div>
-      <div class="col-lg-7">
-        <div class="row g-3 g-md-4">
-          <div class="col-6 col-md-4">
-            <div class="feature-card p-3 text-center h-100">
-              <div class="icon-circle mb-2"><i class="fa-solid fa-user-plus"></i></div>
-              <div class="small text-secondary">Sign up</div>
-            </div>
-          </div>
-          <div class="col-6 col-md-4">
-            <div class="feature-card p-3 text-center h-100">
-              <div class="icon-circle mb-2"><i class="fa-solid fa-gauge-high"></i></div>
-              <div class="small text-secondary">Use dashboard</div>
-            </div>
-          </div>
-          <div class="col-6 col-md-4">
-            <div class="feature-card p-3 text-center h-100">
-              <div class="icon-circle mb-2"><i class="fa-solid fa-table-list"></i></div>
-              <div class="small text-secondary">Add records</div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <section class="mt-12 grid gap-6 md:grid-cols-3">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-200 backdrop-blur">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-200">{% icon 'people' classes='h-6 w-6' %}</div>
+      <h4 class="text-lg font-semibold text-white">Team-ready</h4>
+      <p class="mt-3 text-sm text-slate-300">Add staff accounts and manage access rights without touching the admin site.</p>
+    </div>
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-200 backdrop-blur">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-500/20 text-violet-200">{% icon 'access' classes='h-6 w-6' %}</div>
+      <h4 class="text-lg font-semibold text-white">Accessible defaults</h4>
+      <p class="mt-3 text-sm text-slate-300">Semantic markup, focus management, and responsive patterns come built in.</p>
+    </div>
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-200 backdrop-blur">
+      <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-500/20 text-sky-200">{% icon 'cloud' classes='h-6 w-6' %}</div>
+      <h4 class="text-lg font-semibold text-white">Deployable today</h4>
+      <p class="mt-3 text-sm text-slate-300">Follow the README to deploy on Render, Railway, or your favorite platform.</p>
     </div>
   </section>
 
-  <section class="row g-4">
-    <div class="col-md-4">
-      <div class="feature-card p-4 h-100">
-        <h5 class="mb-2">Secure Auth</h5>
-        <p class="mb-0 text-secondary">Login, Logout, and Registration with helpful feedback messages.</p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="feature-card p-4 h-100">
-        <h5 class="mb-2">Clean UI</h5>
-        <p class="mb-0 text-secondary">Modern typography, balanced spacing, and a crisp color theme.</p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="feature-card p-4 h-100">
-        <h5 class="mb-2">Responsive</h5>
-        <p class="mb-0 text-secondary">Looks great on desktop and mobile with Bootstrap utilities.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="mb-0">Recent Records</h4>
+  <section class="mt-12 rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <h3 class="text-xl font-semibold text-white">Recent records</h3>
       {% if request.user.is_staff %}
-        <a href="{% url 'records_list' %}" class="btn btn-sm btn-outline-primary">View all</a>
+        <a href="{% url 'records_list' %}" class="inline-flex items-center gap-2 text-sm font-semibold text-sky-300 transition hover:text-sky-200">{% icon 'external' classes='h-4 w-4' %} View workspace</a>
       {% endif %}
     </div>
-    <div class="row g-3 g-md-4">
+    <div class="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
       {% for r in recent_records %}
-      <div class="col-md-6 col-lg-4">
-        <div class="feature-card p-4 h-100">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <h6 class="mb-0">{{ r.title }}</h6>
-            <span class="badge text-bg-light">{{ r.created_at|naturaltime }}</span>
+        <article class="rounded-2xl border border-white/10 bg-white/8 p-5 text-sm text-slate-200 shadow-[0_30px_80px_-60px_rgba(15,23,42,0.8)]">
+          <div class="flex items-start justify-between gap-3">
+            <h4 class="text-base font-semibold text-white">{{ r.title }}</h4>
+            <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">{{ r.created_at|naturaltime }}</span>
           </div>
-          <p class="text-secondary small mb-2">{{ r.description|default:'No description' }}</p>
-          <div class="small text-secondary">By {{ r.created_by|default:'—' }}</div>
-        </div>
-      </div>
+          <p class="mt-3 text-slate-300">{{ r.description|default:'No description' }}</p>
+          <p class="mt-4 text-xs uppercase tracking-[0.24em] text-white/60">By {{ r.created_by|default:'—' }}</p>
+        </article>
       {% empty %}
-      <div class="col-12">
-        <div class="feature-card p-4">
-          <p class="mb-0 text-secondary">No records yet. {% if request.user.is_staff %}Create one from the Admin → Records page.{% else %}Ask an admin to add some data.{% endif %}</p>
+        <div class="md:col-span-2 xl:col-span-3 rounded-2xl border border-white/10 bg-white/8 p-6 text-sm text-slate-200">
+          No records yet. {% if request.user.is_staff %}Create one from the admin workspace to populate this section.{% else %}Ask a staff user to add data so you can explore the UI.{% endif %}
         </div>
-      </div>
       {% endfor %}
     </div>
   </section>
 
-  <section class="mt-5">
-    <h4 class="mb-3">Trusted by small teams</h4>
-    <div class="d-flex flex-wrap align-items-center gap-3 text-secondary">
-      <i class="fa-brands fa-github"></i>
-      <i class="fa-brands fa-figma"></i>
-      <i class="fa-brands fa-slack"></i>
-      <i class="fa-brands fa-atlassian"></i>
-      <small class="opacity-75">Demo logos</small>
-    </div>
+  <section class="mt-12 flex flex-wrap items-center gap-4 text-sm text-slate-300">
+    <h3 class="text-base font-semibold uppercase tracking-[0.24em] text-white/70">Trusted by small teams</h3>
+    <span class="text-lg text-white/70">{% icon 'github' classes='h-5 w-5' %}</span>
+    <span class="text-lg text-white/70">{% icon 'figma' classes='h-5 w-5' %}</span>
+    <span class="text-lg text-white/70">{% icon 'slack' classes='h-5 w-5' %}</span>
+    <span class="text-lg text-white/70">{% icon 'atlassian' classes='h-5 w-5' %}</span>
+    <span class="text-xs uppercase tracking-[0.24em] text-slate-500">Demo logos</span>
   </section>
 
-  <section id="faq" class="mt-5">
-    <h4 class="mb-3">FAQ</h4>
-    <div class="accordion" id="faq-acc">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="q1">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="true" aria-controls="a1">
-            What is this app for?
-          </button>
-        </h2>
-        <div id="a1" class="accordion-collapse collapse show" aria-labelledby="q1" data-bs-parent="#faq-acc">
-          <div class="accordion-body">
-            A minimal CRUD starter with auth, admin tools, and a clean UI.
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="q2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false" aria-controls="a2">
-            How do I add records?
-          </button>
-        </h2>
-        <div id="a2" class="accordion-collapse collapse" aria-labelledby="q2" data-bs-parent="#faq-acc">
-          <div class="accordion-body">
-            Staff users can manage records from Admin → Records. Non-staff can view recent items here.
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="q3">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false" aria-controls="a3">
-            Can I customize the look?
-          </button>
-        </h2>
-        <div id="a3" class="accordion-collapse collapse" aria-labelledby="q3" data-bs-parent="#faq-acc">
-          <div class="accordion-body">
-            Yes. Tweak the Bootswatch theme and add styles in <code>static/CSS/style.css</code>.
-          </div>
-        </div>
-      </div>
+  <section id="faq" class="mt-12 rounded-3xl border border-white/10 bg-white/5 p-8 text-slate-200 backdrop-blur">
+    <h3 class="text-xl font-semibold text-white">FAQ</h3>
+    <div class="mt-6 space-y-4">
+      <details class="group rounded-2xl border border-white/10 bg-white/5 p-5">
+        <summary class="flex cursor-pointer items-center justify-between gap-4 text-sm font-semibold text-white transition group-open:text-sky-200">
+          <span>What is this app for?</span>
+          <span class="transition group-open:rotate-180">{% icon 'chevron' classes='h-4 w-4' %}</span>
+        </summary>
+        <p class="mt-3 text-sm text-slate-300">A modern CRUD starter with authentication, admin tools, and a cohesive UI ready for your data model.</p>
+      </details>
+      <details class="group rounded-2xl border border-white/10 bg-white/5 p-5">
+        <summary class="flex cursor-pointer items-center justify-between gap-4 text-sm font-semibold text-white transition group-open:text-sky-200">
+          <span>Can I deploy quickly?</span>
+          <span class="transition group-open:rotate-180">{% icon 'chevron' classes='h-4 w-4' %}</span>
+        </summary>
+        <p class="mt-3 text-sm text-slate-300">Yes. Use the provided README for render, railway, or docker workflows and bring your own Postgres.</p>
+      </details>
+      <details class="group rounded-2xl border border-white/10 bg-white/5 p-5">
+        <summary class="flex cursor-pointer items-center justify-between gap-4 text-sm font-semibold text-white transition group-open:text-sky-200">
+          <span>Does it support teams?</span>
+          <span class="transition group-open:rotate-180">{% icon 'chevron' classes='h-4 w-4' %}</span>
+        </summary>
+        <p class="mt-3 text-sm text-slate-300">Staff-only tools, record management, and friendly defaults make it ready for internal team rollouts.</p>
+      </details>
     </div>
   </section>
-{% endblock content %}
+  {% endwith %}
+{% endblock %}

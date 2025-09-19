@@ -1,0 +1,27 @@
+{% extends 'pages/base.html' %}
+{% load ui_icons %}
+
+{% block title %}Terms of Service · CRUD{% endblock %}
+
+{% block content %}
+  <section class="space-y-6 rounded-3xl border border-white/10 bg-white/5 px-6 py-8 text-slate-200 shadow-[0_50px_110px_-70px_rgba(59,130,246,0.5)] backdrop-blur">
+    <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/70">{% icon 'scale' classes='h-4 w-4' %} Terms update</span>
+    <h1 class="text-3xl font-semibold text-white">Terms of Service</h1>
+    <p class="text-sm text-slate-300">Using this application means you agree to the simple terms outlined below.</p>
+  </section>
+
+  <section class="mt-8 space-y-6 rounded-3xl border border-white/10 bg-white/5 px-6 py-8 text-slate-200 shadow-[0_40px_90px_-60px_rgba(15,23,42,0.7)] backdrop-blur">
+    <div>
+      <h2 class="text-xl font-semibold text-white">Acceptable use</h2>
+      <p class="mt-2 text-sm text-slate-300">You agree to use the application responsibly and to only store records that you have permission to maintain.</p>
+    </div>
+    <div>
+      <h2 class="text-xl font-semibold text-white">Accounts</h2>
+      <p class="mt-2 text-sm text-slate-300">Each user is responsible for keeping their login credentials secure. Administrators may deactivate accounts that violate policy.</p>
+    </div>
+    <div>
+      <h2 class="text-xl font-semibold text-white">Updates</h2>
+      <p class="mt-2 text-sm text-slate-300">These terms may change as the project evolves. Significant updates will be communicated to staff users.</p>
+    </div>
+  </section>
+{% endblock %}

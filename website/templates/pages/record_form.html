@@ -1,0 +1,68 @@
+{% extends 'pages/base.html' %}
+{% load ui_icons %}
+
+{% block title %}{% if is_edit %}Edit Record{% else %}New Record{% endif %} · Admin{% endblock %}
+
+{% block content %}
+  <section class="rounded-3xl border border-white/10 bg-white/5 px-6 py-8 text-slate-200 shadow-[0_50px_110px_-70px_rgba(59,130,246,0.5)] backdrop-blur">
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div class="space-y-3">
+        <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/70">{% icon 'database' classes='h-4 w-4' %} Records</span>
+        <h1 class="text-2xl font-semibold text-white">{% if is_edit %}Update record{% else %}Create a new record{% endif %}</h1>
+        <p class="max-w-xl text-sm text-slate-300">
+          {% if is_edit %}
+            Adjust the fields below—changes are tracked automatically once saved.
+          {% else %}
+            Capture a new item with a clear title and supporting context for your team.
+          {% endif %}
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a href="{% url 'records_list' %}" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10">Back to records</a>
+        {% if is_edit %}
+        <a href="{% url 'record_detail' record.pk %}" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10">View record</a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-8 rounded-3xl border border-white/10 bg-white/5 px-6 py-8 text-slate-200 shadow-[0_40px_90px_-60px_rgba(15,23,42,0.7)] backdrop-blur">
+    <form method="post" autocomplete="off" novalidate class="space-y-6">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="rounded-2xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+          {% for error in form.non_field_errors %}{{ error }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+        </div>
+      {% endif %}
+      {% for field in form %}
+        <div class="space-y-2">
+          {% if field.field.widget.input_type == 'checkbox' %}
+            <label for="{{ field.id_for_label }}" class="inline-flex items-center gap-3 text-sm font-semibold text-white/80">
+              {{ field }}
+              {{ field.label }}
+            </label>
+          {% else %}
+            <label for="{{ field.id_for_label }}" class="text-sm font-semibold text-white/80">{{ field.label }}</label>
+            {{ field }}
+          {% endif %}
+          {% if field.help_text %}
+            <p class="text-xs text-slate-400">{{ field.help_text|safe }}</p>
+          {% endif %}
+          {% if field.errors %}
+            <ul class="space-y-1 text-xs text-rose-300">
+              {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <div class="flex flex-wrap gap-3">
+        <button class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_18px_36px_-24px_rgba(59,130,246,0.7)] transition hover:from-sky-400 hover:to-indigo-400" type="submit">{% if is_edit %}Save changes{% else %}Create record{% endif %}</button>
+        {% if is_edit %}
+          <a href="{% url 'record_detail' record.pk %}" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10">Cancel</a>
+        {% else %}
+          <a href="{% url 'records_list' %}" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10">Cancel</a>
+        {% endif %}
+      </div>
+    </form>
+  </section>
+{% endblock %}

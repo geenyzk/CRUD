@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
+from django.urls import reverse
+from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
 from .forms import CreateUserForm, LoginForm, AdminCreateUserForm, RecordForm
@@ -15,13 +17,23 @@ def home(request):
     # lightweight stats + recent content for homepage
     total_users = User.objects.count()
     total_records = Record.objects.count()
-    recent_records = Record.objects.select_related('created_by')[:6]
+    recent_records = list(Record.objects.select_related('created_by')[:6])
+    latest_record = recent_records[0] if recent_records else None
     context = {
         'total_users': total_users,
         'total_records': total_records,
         'recent_records': recent_records,
+        'latest_record': latest_record,
     }
     return render(request, 'pages/index.html', context)
+
+
+def privacy(request):
+    return render(request, 'pages/privacy.html')
+
+
+def terms(request):
+    return render(request, 'pages/terms.html')
 def register(request):
     form = CreateUserForm()
     if request.method == 'POST':
@@ -63,10 +75,30 @@ def dashboard(request):
     days_since_join = (now.date() - request.user.date_joined.date()).days
 
     stats = [
-        {"label": "New Users (7d)", "value": new_users_week, "icon": "fa-user-plus", "variant": "success"},
-        {"label": "Active (24h)", "value": active_24h, "icon": "fa-bolt", "variant": "warning"},
-        {"label": "Days Since You Joined", "value": days_since_join, "icon": "fa-calendar-day", "variant": "info"},
-        {"label": "Total Users", "value": total_users, "icon": "fa-users", "variant": "primary"},
+        {
+            "label": "New Users (7d)",
+            "value": new_users_week,
+            "icon": "user-plus",
+            "accent": "from-emerald-500/80 to-emerald-400/60",
+        },
+        {
+            "label": "Active (24h)",
+            "value": active_24h,
+            "icon": "bolt",
+            "accent": "from-amber-500/80 to-orange-400/60",
+        },
+        {
+            "label": "Days Since You Joined",
+            "value": days_since_join,
+            "icon": "calendar",
+            "accent": "from-sky-500/80 to-indigo-500/70",
+        },
+        {
+            "label": "Total Users",
+            "value": total_users,
+            "icon": "users",
+            "accent": "from-violet-500/80 to-purple-500/70",
+        },
     ]
 
     recent = []
@@ -74,7 +106,35 @@ def dashboard(request):
         recent.append({"title": "Logged in", "when": request.user.last_login, "status": "Success"})
     recent.append({"title": "Joined CRUD", "when": request.user.date_joined, "status": "Member"})
 
-    return render(request, 'pages/dashboard.html', {"stats": stats, "recent": recent})
+    quick_actions = []
+    latest_records = []
+    if request.user.is_staff:
+        quick_actions = [
+            {
+                "label": "Add Record",
+                "url": reverse('record_create'),
+                "classes": "inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_18px_36px_-24px_rgba(59,130,246,0.7)] transition hover:from-sky-400 hover:to-indigo-400",
+            },
+            {
+                "label": "Manage Records",
+                "url": reverse('records_list'),
+                "classes": "inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10",
+            },
+            {
+                "label": "Manage Users",
+                "url": reverse('admin_users'),
+                "classes": "inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10",
+            },
+        ]
+        latest_records = list(Record.objects.select_related('created_by')[:5])
+
+    context = {
+        "stats": stats,
+        "recent": recent,
+        "quick_actions": quick_actions,
+        "latest_records": latest_records,
+    }
+    return render(request, 'pages/dashboard.html', context)
 
 
 # ----- Staff-only management views -----
@@ -100,8 +160,25 @@ def admin_user_create(request):
 
 @staff_member_required(login_url='login')
 def records_list(request):
-    records = Record.objects.select_related('created_by').all()
-    return render(request, 'pages/records_list.html', {"records": records})
+    query = request.GET.get('q', '').strip()
+    records_qs = Record.objects.select_related('created_by')
+    if query:
+        records_qs = records_qs.filter(
+            Q(title__icontains=query)
+            | Q(description__icontains=query)
+            | Q(created_by__username__icontains=query)
+        )
+
+    records = list(records_qs)
+    total_records = Record.objects.count()
+
+    context = {
+        "records": records,
+        "query": query,
+        "matches": len(records),
+        "total_records": total_records,
+    }
+    return render(request, 'pages/records_list.html', context)
 
 
 @staff_member_required(login_url='login')
@@ -113,7 +190,38 @@ def record_create(request):
         rec.save()
         messages.success(request, 'Record created.')
         return redirect('records_list')
-    return render(request, 'pages/record_create.html', {"form": form})
+    return render(request, 'pages/record_form.html', {"form": form, "is_edit": False, "record": None})
+
+
+@staff_member_required(login_url='login')
+def record_detail(request, pk: int):
+    record = get_object_or_404(Record.objects.select_related('created_by'), pk=pk)
+    return render(request, 'pages/record_detail.html', {"record": record})
+
+
+@staff_member_required(login_url='login')
+def record_update(request, pk: int):
+    record = get_object_or_404(Record, pk=pk)
+    form = RecordForm(request.POST or None, instance=record)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Record updated.')
+            return redirect('record_detail', pk=record.pk)
+        messages.error(request, 'Please fix the errors below to update this record.')
+    return render(request, 'pages/record_form.html', {"form": form, "record": record, "is_edit": True})
+
+
+@staff_member_required(login_url='login')
+def record_delete(request, pk: int):
+    record = get_object_or_404(Record, pk=pk)
+    if request.method == 'POST':
+        title = record.title
+        record.delete()
+        messages.success(request, f"Deleted record '{title}'.")
+        return redirect('records_list')
+    cancel_url = request.GET.get('next') or reverse('record_detail', kwargs={'pk': record.pk})
+    return render(request, 'pages/record_confirm_delete.html', {"record": record, "cancel_url": cancel_url})
 
 
 # ----- Role toggle actions -----

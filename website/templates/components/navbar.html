@@ -1,51 +1,74 @@
-<nav class="navbar navbar-expand-lg bg-primary shadow-sm site-nav" data-bs-theme="dark">
-  <div class="container-xxl px-3 px-lg-4">
-    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{% url 'home' %}">
-      <i class="fa-solid fa-cubes"></i>
-      <span>CRUD</span>
+{% load ui_icons %}
+{% with route=request.resolver_match.url_name %}
+<header class="relative z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur">
+  <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 px-6 py-5">
+    <a href="{% url 'home' %}" class="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.24em] text-white">
+      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-indigo-500 text-lg text-white shadow-[0_12px_30px_-20px_rgba(56,189,248,0.8)]">
+        {% icon 'stack' classes='h-5 w-5' %}
+      </span>
+      CRUD Studio
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+
+    <button type="button" class="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 text-white transition hover:border-white/40 lg:hidden" aria-label="Toggle navigation" data-nav-toggle>
+      {% icon 'bars' classes='h-5 w-5' %}
     </button>
-    <div class="collapse navbar-collapse" id="navbarColor01">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#features">Features</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#faq">FAQ</a></li>
+
+    <div class="nav-sheet absolute left-0 right-0 top-full hidden flex-col gap-6 border-b border-white/10 bg-slate-950/95 px-6 pb-6 pt-4 shadow-[0_40px_80px_-60px_rgba(14,165,233,0.55)] lg:static lg:flex lg:flex-row lg:items-center lg:justify-between lg:border-none lg:bg-transparent lg:px-0 lg:pb-0 lg:pt-0 lg:shadow-none" data-nav-menu>
+      <nav class="flex flex-col gap-4 text-sm font-semibold text-slate-200 lg:flex-row lg:items-center lg:gap-6">
+        <a href="{% url 'home' %}" class="transition hover:text-white {% if route == 'home' %}text-sky-300{% endif %}">Home</a>
+        <a href="{% url 'home' %}#features" class="transition hover:text-white">Features</a>
+        <a href="{% url 'home' %}#faq" class="transition hover:text-white">FAQ</a>
         {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
+          <a href="{% url 'dashboard' %}" class="transition hover:text-white {% if route == 'dashboard' %}text-sky-300{% endif %}">Dashboard</a>
           {% if user.is_staff %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Admin</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'admin_users' %}">Users</a></li>
-              <li><a class="dropdown-item" href="{% url 'records_list' %}">Records</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="{% url 'admin:index' %}">Django Admin</a></li>
-            </ul>
-          </li>
+            <a href="{% url 'records_list' %}" class="transition hover:text-white {% if route == 'records_list' or route == 'record_detail' or route == 'record_update' or route == 'record_delete' or route == 'record_create' %}text-sky-300{% endif %}">Records</a>
+            <a href="{% url 'admin_users' %}" class="transition hover:text-white {% if route == 'admin_users' or route == 'admin_user_create' %}text-sky-300{% endif %}">Team</a>
+            <a href="{% url 'admin:index' %}" class="transition hover:text-white" target="_blank" rel="noopener">Django Admin</a>
           {% endif %}
         {% endif %}
-      </ul>
-      <div class="d-flex align-items-center gap-2">
+      </nav>
+
+      <div class="flex flex-col gap-3 border-t border-white/10 pt-4 lg:flex-row lg:items-center lg:gap-4 lg:border-none lg:pt-0">
         {% if user.is_authenticated %}
-          <span class="navbar-text me-2">Hi, {{ user.username }}</span>
-          <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}">Logout</a>
+          <span class="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/85">
+            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-sky-500 text-sm font-semibold text-white">{{ user.username|first|upper }}</span>
+            {{ user.username }}
+          </span>
+          <a href="{% url 'logout' %}" class="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-white/40 hover:bg-white/10">Logout</a>
         {% else %}
-          <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Login</a>
-          <a class="btn btn-warning btn-sm" href="{% url 'register' %}">Sign Up</a>
+          <a href="{% url 'login' %}" class="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-white/40 hover:bg-white/10">Sign in</a>
+          <a href="{% url 'register' %}" class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_18px_40px_-24px_rgba(59,130,246,0.8)] transition hover:from-sky-400 hover:to-indigo-400">Create account</a>
         {% endif %}
       </div>
     </div>
   </div>
-</nav>
-{% if messages %}
-  <div class="container mt-3">
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  </div>
-{% endif %}
+</header>
+<script>
+  (function () {
+    const toggle = document.querySelector('[data-nav-toggle]');
+    const menu = document.querySelector('[data-nav-menu]');
+    if (!toggle || !menu) return;
+    toggle.addEventListener('click', () => {
+      const isOpen = menu.classList.contains('flex');
+      if (isOpen) {
+        menu.classList.add('hidden');
+        menu.classList.remove('flex');
+      } else {
+        menu.classList.remove('hidden');
+        menu.classList.add('flex');
+      }
+    });
+    function syncMenu() {
+      if (window.innerWidth >= 1024) {
+        menu.classList.add('flex');
+        menu.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+        menu.classList.remove('flex');
+      }
+    }
+    window.addEventListener('resize', syncMenu);
+    syncMenu();
+  })();
+</script>
+{% endwith %}

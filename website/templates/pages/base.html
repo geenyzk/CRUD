@@ -6,10 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CRUD{% endblock %}</title>
     <meta name="description" content="A polished Django CRUD starter with authentication, clean UI, and admin tools.">
-    <meta name="theme-color" content="#0d6efd">
-    <!-- Core styles: Bootstrap + Bootswatch theme -->
-    <link rel="stylesheet" href="{% static 'CSS/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'CSS/lux-bootstrap.css' %}">
+    <meta name="theme-color" content="#0ea5e9">
     <!-- App overrides -->
     <link rel="stylesheet" href="{% static 'CSS/style.css' %}">
     <!-- Fonts -->
@@ -17,18 +14,49 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZmCULaM6tU8zTnDJbC0iE4zVF5lXJvR+1fGMEYShgojW3aV+8U5KkN8YF7X+4d0cw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <script>
+      window.tailwind = window.tailwind || {};
+      window.tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              space: '#0f172a',
+              slateglass: 'rgba(15, 23, 42, 0.65)',
+              aurora: '#38bdf8',
+              orchid: '#c084fc'
+            },
+            fontFamily: {
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+              display: ['Poppins', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+            },
+            boxShadow: {
+              glow: '0 40px 80px -45px rgba(37, 99, 235, 0.45)'
+            }
+          }
+        },
+        corePlugins: {
+          preflight: false
+        }
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
 </head>
-<body>
-    {% include 'components/navbar.html' %}
+<body class="min-h-screen bg-slate-950 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.12),_transparent_60%),_radial-gradient(circle_at_bottom,_rgba(129,140,248,0.14),_transparent_65%)] font-sans text-slate-100">
+  <div class="relative flex min-h-screen flex-col">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(14,165,233,0.08),transparent_55%)]"></div>
+    <div class="relative z-10 flex flex-1 flex-col">
+      {% include 'components/navbar.html' %}
 
-    <main class="site-main py-4 py-md-5">
-      <div class="container-xxl">
-        {% block content %}{% endblock %}
-      </div>
-    </main>
+      <main class="flex-1 py-10">
+        <div class="mx-auto w-full max-w-6xl px-6">
+          {% include 'components/messages.html' %}
+          {% block content %}{% endblock %}
+        </div>
+      </main>
 
-    {% include 'components/footer.html' %}
+      {% include 'components/footer.html' %}
+    </div>
+  </div>
+  {% block extra_js %}{% endblock %}
 </body>
-    <script src="{% static 'JS/bootstrap.js' %}"></script>
 </html>

@@ -1,0 +1,73 @@
+{% load ui_icons %}
+{% if messages %}
+  <div class="mb-6 space-y-3" data-messages>
+    {% for message in messages %}
+      {% with tags=message.tags %}
+        {% if 'success' in tags %}
+          {% with bg='bg-emerald-500/10 border-emerald-400/40 text-emerald-200' icon='check' %}
+            <div class="flex items-start justify-between gap-4 rounded-2xl border {{ bg }} px-4 py-3 shadow-[0_20px_45px_-38px_rgba(56,189,248,0.8)]" data-message>
+              <div class="flex items-start gap-3 text-sm">
+                <span class="mt-1 text-base">{% icon icon classes='h-4 w-4' %}</span>
+                <span class="text-slate-100/90">{{ message }}</span>
+              </div>
+              <button type="button" class="text-slate-400 transition hover:text-white" data-message-dismiss aria-label="Dismiss">
+                {% icon 'x' classes='h-4 w-4' %}
+              </button>
+            </div>
+          {% endwith %}
+        {% elif 'error' in tags or 'danger' in tags %}
+          {% with bg='bg-rose-500/10 border-rose-400/40 text-rose-200' icon='circle-exclamation' %}
+            <div class="flex items-start justify-between gap-4 rounded-2xl border {{ bg }} px-4 py-3 shadow-[0_20px_45px_-38px_rgba(244,114,182,0.7)]" data-message>
+              <div class="flex items-start gap-3 text-sm">
+                <span class="mt-1 text-base">{% icon icon classes='h-4 w-4' %}</span>
+                <span class="text-slate-100/90">{{ message }}</span>
+              </div>
+              <button type="button" class="text-slate-400 transition hover:text-white" data-message-dismiss aria-label="Dismiss">
+                {% icon 'x' classes='h-4 w-4' %}
+              </button>
+            </div>
+          {% endwith %}
+        {% elif 'warning' in tags %}
+          {% with bg='bg-amber-500/10 border-amber-400/40 text-amber-200' icon='triangle' %}
+            <div class="flex items-start justify-between gap-4 rounded-2xl border {{ bg }} px-4 py-3 shadow-[0_20px_45px_-38px_rgba(251,191,36,0.65)]" data-message>
+              <div class="flex items-start gap-3 text-sm">
+                <span class="mt-1 text-base">{% icon icon classes='h-4 w-4' %}</span>
+                <span class="text-slate-100/90">{{ message }}</span>
+              </div>
+              <button type="button" class="text-slate-400 transition hover:text-white" data-message-dismiss aria-label="Dismiss">
+                {% icon 'x' classes='h-4 w-4' %}
+              </button>
+            </div>
+          {% endwith %}
+        {% else %}
+          {% with bg='bg-sky-500/10 border-sky-400/40 text-sky-200' icon='circle-info' %}
+            <div class="flex items-start justify-between gap-4 rounded-2xl border {{ bg }} px-4 py-3 shadow-[0_20px_45px_-38px_rgba(56,189,248,0.8)]" data-message>
+              <div class="flex items-start gap-3 text-sm">
+                <span class="mt-1 text-base">{% icon icon classes='h-4 w-4' %}</span>
+                <span class="text-slate-100/90">{{ message }}</span>
+              </div>
+              <button type="button" class="text-slate-400 transition hover:text-white" data-message-dismiss aria-label="Dismiss">
+                {% icon 'x' classes='h-4 w-4' %}
+              </button>
+            </div>
+          {% endwith %}
+        {% endif %}
+      {% endwith %}
+    {% endfor %}
+  </div>
+  <script>
+    (function () {
+      const container = document.querySelector('[data-messages]');
+      if (!container) return;
+      container.querySelectorAll('[data-message-dismiss]').forEach(button => {
+        button.addEventListener('click', () => {
+          const message = button.closest('[data-message]');
+          if (message) {
+            message.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => message.remove(), 150);
+          }
+        });
+      });
+    })();
+  </script>
+{% endif %}

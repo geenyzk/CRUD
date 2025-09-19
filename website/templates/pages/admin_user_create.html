@@ -1,24 +1,57 @@
 {% extends 'pages/base.html' %}
-{% load crispy_forms_tags %}
+{% load ui_icons %}
 
 {% block title %}Add User · Admin{% endblock %}
 
 {% block content %}
-  <h3 class="mb-3 text-center">Add User</h3>
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6 col-xl-5 mx-auto">
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-4">
-          <form method="post" autocomplete="off" novalidate>
-            {% csrf_token %}
-            {{ form|crispy }}
-            <div class="d-flex gap-2 mt-3">
-              <button class="btn btn-primary" type="submit">Create User</button>
-              <a href="{% url 'admin_users' %}" class="btn btn-outline-secondary">Cancel</a>
-            </div>
-          </form>
-        </div>
+  <section class="rounded-3xl border border-white/10 bg-white/5 px-6 py-8 text-slate-200 shadow-[0_50px_110px_-70px_rgba(59,130,246,0.5)] backdrop-blur">
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div class="space-y-3">
+        <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/70">{% icon 'user-plus' classes='h-4 w-4' %} Invite teammate</span>
+        <h1 class="text-2xl font-semibold text-white">Create a new user</h1>
+        <p class="max-w-xl text-sm text-slate-300">Provision login credentials and choose whether the account should have admin privileges.</p>
       </div>
+      <a href="{% url 'admin_users' %}" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10">{% icon 'arrow-left' classes='h-4 w-4' %} Back to users</a>
     </div>
-  </div>
+  </section>
+
+  <section class="mt-8 rounded-3xl border border-white/10 bg-white/5 px-6 py-8 text-slate-200 shadow-[0_40px_90px_-60px_rgba(15,23,42,0.7)] backdrop-blur">
+    <form method="post" autocomplete="off" novalidate class="space-y-6">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="rounded-2xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+          {% for error in form.non_field_errors %}{{ error }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+        </div>
+      {% endif %}
+
+      {% for field in form %}
+        <div class="space-y-2">
+          {% if field.field.widget.input_type == 'checkbox' %}
+            <label class="inline-flex items-center gap-3 text-sm font-semibold text-white/80" for="{{ field.id_for_label }}">
+              {{ field }}
+              {{ field.label }}
+            </label>
+          {% else %}
+            <label for="{{ field.id_for_label }}" class="text-sm font-semibold text-white/80">{{ field.label }}</label>
+            {{ field }}
+          {% endif %}
+          {% if field.help_text %}
+            <p class="text-xs text-slate-400">{{ field.help_text|safe }}</p>
+          {% endif %}
+          {% if field.errors %}
+            <ul class="space-y-1 text-xs text-rose-300">
+              {% for error in field.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <div class="flex flex-wrap gap-3">
+        <button class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_18px_36px_-24px_rgba(59,130,246,0.7)] transition hover:from-sky-400 hover:to-indigo-400" type="submit">{% icon 'user-plus' classes='h-4 w-4' %} Create user</button>
+        <a href="{% url 'admin_users' %}" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10">{% icon 'x' classes='h-4 w-4' %} Cancel</a>
+      </div>
+    </form>
+  </section>
 {% endblock %}

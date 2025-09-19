@@ -1,0 +1,35 @@
+{% extends 'pages/base.html' %}
+{% load humanize ui_icons %}
+
+{% block title %}{{ record.title }} · Record{% endblock %}
+
+{% block content %}
+  <section class="rounded-3xl border border-white/10 bg-white/5 px-6 py-8 text-slate-200 shadow-[0_50px_110px_-70px_rgba(59,130,246,0.5)] backdrop-blur">
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div class="space-y-3">
+        <nav aria-label="breadcrumb" class="text-xs uppercase tracking-[0.24em] text-white/50">
+          <ol class="flex items-center gap-2">
+            <li><a href="{% url 'records_list' %}" class="text-sky-300 transition hover:text-sky-200">Records</a></li>
+            <li>/</li>
+            <li class="text-white/70">{{ record.title }}</li>
+          </ol>
+        </nav>
+        <h1 class="text-3xl font-semibold text-white">{{ record.title }}</h1>
+        <div class="flex flex-wrap gap-3 text-xs uppercase tracking-[0.24em] text-white/60">
+          <span class="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1">{% icon 'clock' classes='h-4 w-4' %} Created {{ record.created_at|naturaltime }}</span>
+          <span class="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1">{% icon 'user' classes='h-4 w-4' %} {{ record.created_by|default:'Unassigned' }}</span>
+          <span class="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1">{% icon 'pen-square' classes='h-4 w-4' %} Updated {{ record.updated_at|naturaltime }}</span>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a href="{% url 'record_update' record.pk %}" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10">{% icon 'pen' classes='h-4 w-4' %} Edit</a>
+        <a href="{% url 'record_delete' record.pk %}?next={% url 'record_detail' record.pk %}" class="inline-flex items-center gap-2 rounded-full border border-rose-300/40 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:border-rose-200 hover:bg-rose-500/10">{% icon 'trash' classes='h-4 w-4' %} Delete</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-8 rounded-3xl border border-white/10 bg-white/5 px-6 py-8 text-slate-200 shadow-[0_40px_90px_-60px_rgba(15,23,42,0.7)] backdrop-blur">
+    <h2 class="text-lg font-semibold text-white">Description</h2>
+    <p class="mt-4 whitespace-pre-line text-sm text-slate-300">{{ record.description|default:'No description added yet. Add more context to help collaborators understand the purpose of this record.' }}</p>
+  </section>
+{% endblock %}

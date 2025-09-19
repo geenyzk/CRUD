@@ -1,72 +1,145 @@
 {% extends 'pages/base.html' %}
-{% load humanize %}
+{% load humanize ui_icons %}
 
 {% block title %}Dashboard · CRUD{% endblock %}
 
 {% block content %}
-  <div class="feature-card p-3 p-md-4 mb-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center">
-      <div>
-        <h2 class="mb-1">Hi {{ user.first_name|default:user.username }},</h2>
-        <p class="text-secondary mb-0">Here’s a quick overview of your workspace.</p>
-      </div>
-      <div class="d-flex gap-2 mt-3 mt-md-0">
-        <a href="{% url 'logout' %}" class="btn btn-outline-secondary">Logout</a>
-      </div>
+  <section class="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 px-8 py-10 shadow-[0_60px_120px_-60px_rgba(29,78,216,0.55)]">
+    <div class="pointer-events-none absolute inset-0">
+      <div class="absolute -left-28 top-0 h-64 w-64 rounded-full bg-sky-400/25 blur-3xl"></div>
+      <div class="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-violet-400/20 blur-3xl"></div>
     </div>
-  </div>
-
-  <section class="row g-3 g-md-4 mb-4">
-    {% for s in stats %}
-    <div class="col-6 col-md-3">
-      <div class="feature-card p-3 p-md-4 h-100">
-        <div class="d-flex align-items-center gap-3">
-          <div class="text-{{ s.variant }} fs-4"><i class="fa-solid {{ s.icon }}"></i></div>
-          <div>
-            <div class="h4 mb-0">{{ s.value }}</div>
-            <div class="text-secondary small">{{ s.label }}</div>
+    <div class="relative grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+      <div class="space-y-6">
+        <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/70">{% icon 'sparkles' classes='h-4 w-4' %} Mission control</span>
+        <h1 class="text-3xl font-semibold text-white sm:text-4xl">Hi {{ user.first_name|default:user.username }}, your workspace is cleared for launch.</h1>
+        <p class="max-w-xl text-sm text-slate-200/85 sm:text-base">Keep tabs on your community, respond faster, and celebrate wins as they happen.</p>
+        {% if stats %}
+        <div class="grid gap-4 sm:grid-cols-2">
+          {% for s in stats|slice:":2" %}
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-5 text-slate-200 backdrop-blur">
+            <div class="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+              {{ s.label }}
+              {% icon s.icon classes='h-4 w-4 text-white/60' %}
+            </div>
+            <p class="mt-3 text-3xl font-semibold text-white">{{ s.value }}</p>
           </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="flex flex-wrap gap-3">
+          {% if request.user.is_staff %}
+            <a href="{% url 'record_create' %}" class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_18px_36px_-24px_rgba(59,130,246,0.7)] transition hover:from-sky-400 hover:to-indigo-400">{% icon 'plus' classes='h-4 w-4' %} New record</a>
+          {% else %}
+            <a href="{% url 'records_list' %}" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10">{% icon 'table' classes='h-4 w-4' %} View records</a>
+          {% endif %}
+          <a href="{% url 'logout' %}" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white/85 transition hover:border-white/35 hover:bg-white/10">{% icon 'logout' classes='h-4 w-4' %} Sign out</a>
         </div>
       </div>
+      <div class="space-y-4">
+        {% if stats %}
+        <div class="grid gap-4 sm:grid-cols-2">
+          {% for s in stats|slice:"2:" %}
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+            <div class="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
+              {{ s.label }}
+              {% icon s.icon classes='h-4 w-4 text-white/60' %}
+            </div>
+            <p class="mt-3 text-3xl font-semibold text-white">{{ s.value }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+          <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-center text-slate-200 backdrop-blur">
+          <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-sky-500/40 to-indigo-500/30 text-3xl text-white">{% icon 'satellite' classes='h-10 w-10' %}</div>
+          {% if stats %}
+            {% with last_stat=stats|last %}
+              <p class="mt-4 text-sm text-white/70 uppercase tracking-[0.24em]">Total users</p>
+              <p class="text-3xl font-semibold text-white">{{ last_stat.value }}</p>
+            {% endwith %}
+          {% else %}
+            <p class="mt-4 text-sm text-white/70 uppercase tracking-[0.24em]">No data yet</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if stats %}
+  <section class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {% for s in stats %}
+    <div class="rounded-3xl bg-gradient-to-br {{ s.accent }} p-5 text-white shadow-[0_40px_90px_-60px_rgba(59,130,246,0.5)]">
+      <div class="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.24em] text-white/80">
+        {{ s.label }}
+        {% icon s.icon classes='h-4 w-4 text-white/80' %}
+      </div>
+      <p class="mt-3 text-4xl font-semibold">{{ s.value }}</p>
     </div>
     {% endfor %}
   </section>
+  {% endif %}
 
-  <section class="row g-4">
-    <div class="col-lg-8">
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-4">
-          <h5 class="card-title mb-3">Recent Activity</h5>
-          <div class="list-group list-group-flush">
-            {% for item in recent %}
-            <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+  <section class="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+    <div class="space-y-8">
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-200 backdrop-blur">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <h2 class="text-lg font-semibold text-white">Activity timeline</h2>
+          <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/70">{% icon 'clock' classes='h-4 w-4' %} Live sync</span>
+        </div>
+        <div class="mt-6 space-y-4">
+          {% for item in recent %}
+            <div class="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-200">
               <div>
-                <div class="fw-medium">{{ item.title }}</div>
-                <div class="small text-secondary">{{ item.when|naturaltime }}</div>
+                <p class="font-semibold text-white">{{ item.title }}</p>
+                <p class="text-xs uppercase tracking-[0.2em] text-white/60">{{ item.when|naturaltime }}</p>
               </div>
-              <span class="badge text-bg-light border">{{ item.status }}</span>
+              <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/70">{{ item.status }}</span>
             </div>
-            {% empty %}
-            <div class="text-secondary">No recent items.</div>
-            {% endfor %}
-          </div>
+          {% empty %}
+            <p class="text-sm text-slate-300">No recent items.</p>
+          {% endfor %}
         </div>
       </div>
+
+      {% if latest_records %}
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-200 backdrop-blur">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <h2 class="text-lg font-semibold text-white">Latest records</h2>
+          <a href="{% url 'records_list' %}" class="inline-flex items-center gap-2 text-sm font-semibold text-sky-300 transition hover:text-sky-200">{% icon 'external' classes='h-4 w-4' %} Manage records</a>
+        </div>
+        <div class="mt-6 space-y-3">
+          {% for record in latest_records %}
+          <a href="{% url 'record_detail' record.pk %}" class="block rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-slate-200 transition hover:border-white/20 hover:bg-white/10">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="font-semibold text-white">{{ record.title }}</p>
+                <p class="text-xs uppercase tracking-[0.2em] text-white/60">{{ record.created_by|default:'—' }} · {{ record.created_at|naturaltime }}</p>
+              </div>
+              {% icon 'chevron' classes='h-4 w-4 text-white/40' %}
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
     </div>
-    <div class="col-lg-4">
-      <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body p-4">
-          <h5 class="card-title mb-3">Quick Actions</h5>
-          <div class="d-grid gap-2">
-            <a href="#" class="btn btn-primary" role="button">Add Client</a>
-            <a href="#" class="btn btn-outline-primary" role="button">New Project</a>
-            <a href="#" class="btn btn-outline-secondary" role="button">View Reports</a>
-          </div>
+
+    <div class="space-y-8">
+      {% if quick_actions %}
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-200 backdrop-blur">
+        <h2 class="text-lg font-semibold text-white">Quick actions</h2>
+        <div class="mt-5 grid gap-3">
+          {% for action in quick_actions %}
+          <a href="{{ action.url }}" class="{{ action.classes }}">
+            {{ action.label }}
+          </a>
+          {% endfor %}
         </div>
       </div>
-      <div class="feature-card p-4">
-        <h6 class="mb-2">Tips</h6>
-        <p class="text-secondary small mb-0">Customize this dashboard by connecting it to your models once they’re ready.</p>
+      {% endif %}
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-200 backdrop-blur">
+        <h3 class="text-base font-semibold text-white">Pro tip</h3>
+        <p class="mt-3 text-sm text-slate-300">Add charts, team spotlights, or announcement widgets here to keep everyone aligned.</p>
       </div>
     </div>
   </section>
